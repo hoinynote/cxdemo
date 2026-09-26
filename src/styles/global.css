@@ -1,0 +1,98 @@
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--color-canvas);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.startup-shell {
+  min-height: 100vh;
+}
+
+.startup-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding-inline: clamp(var(--space-4), 4vw, var(--space-10));
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand-mark {
+  display: inline-grid;
+  min-width: 44px;
+  height: 28px;
+  place-items: center;
+  color: var(--color-brand-strong);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.startup-header__product {
+  padding-left: var(--space-3);
+  color: var(--color-muted);
+  border-left: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.startup-message {
+  width: min(100% - 32px, 720px);
+  margin: clamp(72px, 16vh, 160px) auto 0;
+  padding: clamp(24px, 6vw, 48px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-brand-strong);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.startup-message h1 {
+  margin: 0;
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.startup-message__description {
+  margin: var(--space-3) 0 0;
+  color: var(--color-muted);
+}

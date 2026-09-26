@@ -1,0 +1,27 @@
+:root {
+  color-scheme: light;
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  --color-brand: #df6840;
+  --color-brand-strong: #b84c2b;
+  --color-ink: #20272d;
+  --color-muted: #68737c;
+  --color-border: #dfe3e6;
+  --color-surface: #ffffff;
+  --color-canvas: #f6f7f8;
+  --color-success: #287a5a;
+  --color-warning: #a96815;
+  --color-danger: #b53c36;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-control: 6px;
+  --radius-panel: 8px;
+  --focus-ring: 0 0 0 3px rgb(223 104 64 / 24%);
+}
