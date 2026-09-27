@@ -1,4 +1,4 @@
-# Task: T11 Diagnostic Preview & Export
+﻿# Task: T11 Diagnostic Preview & Export
 
 ## Status: done
 
@@ -75,5 +75,6 @@ Task: T11-report-preview-and-export
 - The report sample is 10.8333 × 7.5 inches (13:9); output preserves this ratio instead of the earlier 16:9 plan assumption.
 - PPTX pages are rasterized from the shared page canvas to keep preview/PDF/PPTX composition aligned; exported slides are visually faithful but not individually editable text/shapes.
 - Missing source content remains labeled in the report. No sample numeric background is included.
-- commit: pending
-- commit: pending
+- commit: 6b88b44
+- commit: 6b88b44
+
