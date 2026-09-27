@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import type { AnalysisResult } from '../../../domain/analytics';
 import type { AnalysisFilters } from '../../../domain/filters';
 import type { CustomerReportItem } from '../../../domain/reports';
+import { useEffect, useState } from 'react';
+import { AiPanel } from '../../ai/AiPanel';
 
 export interface AnalysisActionContext {
   screenId: string;
@@ -13,12 +15,19 @@ export interface AnalysisActionContext {
 
 export function AnalysisPageFrame({ title, screenId, children }: { title: string; screenId: string; children: ReactNode }) {
   const { user, result, viewModel, filters } = useAnalysisScreen(title);
+  const [aiOpen, setAiOpen] = useState(false);
   const filtered = Object.values(filters.dimensions).some(Boolean);
   const actionContext: AnalysisActionContext = { screenId, filters, result };
 
   function askAi() {
     window.dispatchEvent(new CustomEvent<AnalysisActionContext>('cx:open-ai', { detail: actionContext }));
   }
+
+  useEffect(() => {
+    const openPanel = () => setAiOpen(true);
+    window.addEventListener('cx:open-ai', openPanel);
+    return () => window.removeEventListener('cx:open-ai', openPanel);
+  }, []);
 
   function addToReport() {
     const evidence = result.subjectNCSI.evidence ? [result.subjectNCSI.evidence] : [];
@@ -44,6 +53,7 @@ export function AnalysisPageFrame({ title, screenId, children }: { title: string
       <GlobalFilterBar />
       {user?.role === 'consultant' && viewModel.evidence.length > 0 && <p className="consultant-evidence-count">근거 확인 가능 · {viewModel.evidence.length}개 출처 레코드</p>}
       {children}
+      {aiOpen && <AiPanel screenId={screenId} onClose={() => setAiOpen(false)} />}
     </div>
   );
 }

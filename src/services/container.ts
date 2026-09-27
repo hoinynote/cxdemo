@@ -1,9 +1,11 @@
 import { demoDataset } from '../data/demo-dataset';
 import type { DemoDataset } from '../data/schema';
-import type { AiAnalysisPort } from '../domain/ai';
 import type { ReportEnginePort } from '../domain/reports';
+import type { ReferenceMaterial } from '../domain/projects';
 import { DemoAnalyticsService } from './demo-analytics';
+import { DemoAiAnalysisService } from './demo-ai';
 import { DemoImportValidator } from './demo-import-validator';
+import { demoFeedbackStore } from '../data/demo-feedback-store';
 
 export class ServiceNotConfiguredError extends Error {
   constructor(serviceName: string) {
@@ -11,15 +13,6 @@ export class ServiceNotConfiguredError extends Error {
     this.name = 'ServiceNotConfiguredError';
   }
 }
-
-const unconfiguredAi: AiAnalysisPort = {
-  async ask() {
-    throw new ServiceNotConfiguredError('CX AI');
-  },
-  async submitFeedback() {
-    throw new ServiceNotConfiguredError('AI 피드백');
-  },
-};
 
 const unconfiguredReports: ReportEnginePort = {
   async exportCustomerReport() {
@@ -32,10 +25,11 @@ const unconfiguredReports: ReportEnginePort = {
 
 const importValidator = new DemoImportValidator();
 
-export function createServiceContainer(dataset: DemoDataset = demoDataset) {
+export function createServiceContainer(dataset: DemoDataset = demoDataset, references: ReferenceMaterial[] = []) {
+  const analytics = new DemoAnalyticsService(dataset);
   return {
-    analytics: new DemoAnalyticsService(dataset),
-    ai: unconfiguredAi,
+    analytics,
+    ai: new DemoAiAnalysisService(analytics, references, demoFeedbackStore),
     reports: unconfiguredReports,
     importValidator,
   };
