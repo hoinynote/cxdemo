@@ -8,7 +8,7 @@
     "파일정보"
   ],
   "sourceHash": "547848898d3d663e77d8831bc9297603ead8ac5e1605c0efaa6a75eb8c54b21f",
-  "importedAt": "2026-09-27T01:17:51.791Z",
+  "importedAt": "2026-09-27T01:27:46.024Z",
   "mappingVersion": "ncsi-dutyfree-map-v1",
   "sourceRowCount": 450,
   "fieldIds": {
@@ -126,7 +126,9 @@
   },
   "year": 2022,
   "industryId": "industry-면세점",
+  "industryLabel": "면세점",
   "sectorId": "sector-도매-및-소매업-g",
+  "sectorLabel": "도매 및 소매업(G)",
   "companies": [
     {
       "id": "company-롯데면세점",

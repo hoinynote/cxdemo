@@ -50,7 +50,9 @@ export interface DemoDataset {
   missingValueCounts: Record<string, number>;
   year: 2022;
   industryId: string;
+  industryLabel: string;
   sectorId: string;
+  sectorLabel: string;
   companies: CompanyRecord[];
   factors: QualityFactorRecord[];
   cells: AggregateCell[];
