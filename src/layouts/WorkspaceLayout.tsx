@@ -26,7 +26,7 @@ export function WorkspaceLayout() {
         <button className="mobile-nav-toggle" type="button" aria-expanded={navOpen} aria-controls="workspace-navigation" onClick={() => setNavOpen(!navOpen)}>
           <span aria-hidden="true">☰</span><span className="sr-only">메뉴</span>
         </button>
-        <NavLink className="workspace-brand" to="/workspace/analysis/overall" aria-label="KPC CX 홈">
+        <NavLink className="workspace-brand" to="/workspace/overview/all" aria-label="KPC CX 홈">
           <span className="brand-mark">KPC</span><span className="workspace-brand__product">CX</span>
         </NavLink>
         <div className="workspace-context">

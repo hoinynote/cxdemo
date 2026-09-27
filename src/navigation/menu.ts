@@ -13,12 +13,12 @@ const consultantOnly: UserRole[] = ['consultant'];
 export const workspaceMenu: MenuItem[] = [
   {
     label: '전체 수준 분석',
-    path: '/workspace/analysis/overall',
+    path: '/workspace/overview/all',
     roles: analysisRoles,
     children: [
-      { label: '전체 수준 분석', path: '/workspace/analysis/overall', roles: analysisRoles },
-      { label: '산업별 수준 분석', path: '/workspace/analysis/industry', roles: analysisRoles },
-      { label: '기업별 수준 분석', path: '/workspace/analysis/company', roles: analysisRoles },
+      { label: '전체 수준 분석', path: '/workspace/overview/all', roles: analysisRoles },
+      { label: '산업별 수준 분석', path: '/workspace/overview/industry', roles: analysisRoles },
+      { label: '기업별 수준 분석', path: '/workspace/overview/company', roles: analysisRoles },
     ],
   },
   {
@@ -27,8 +27,8 @@ export const workspaceMenu: MenuItem[] = [
     roles: analysisRoles,
     children: [
       { label: '기업별 수준 분석', path: '/workspace/factors/company', roles: analysisRoles },
-      { label: '고객군별 수준 분석', path: '/workspace/factors/customer-group', roles: analysisRoles },
-      { label: '업종별 기업 비교 분석', path: '/workspace/factors/industry-compare', roles: analysisRoles },
+      { label: '고객군별 수준 분석', path: '/workspace/factors/customers', roles: analysisRoles },
+      { label: '업종별 기업 비교 분석', path: '/workspace/factors/industry-comparison', roles: analysisRoles },
     ],
   },
   { label: '컨설팅 업무', path: '/workspace/consulting', roles: consultantOnly },
