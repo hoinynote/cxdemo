@@ -91,4 +91,4 @@ Task: T12-admin-portal
 
 - [x] 구현 완료
 - [x] 검증 통과 (`npm.cmd run typecheck`, `npm.cmd run build`)
-- commit: pending
+- commit: `81da06e`
