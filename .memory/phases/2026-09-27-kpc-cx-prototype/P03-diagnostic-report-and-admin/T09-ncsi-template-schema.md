@@ -1,4 +1,4 @@
-# Task: T09 NCSI 104-page Template Schema
+﻿# Task: T09 NCSI 104-page Template Schema
 
 ## Status: done
 
@@ -77,4 +77,5 @@ Task: T09-ncsi-template-schema
 - [x] Validation passed: `npm.cmd run typecheck`, `npm.cmd run build`.
 - Source text extraction provides 140 generation conditions for 141 containers. The unmatched condition is flagged for consultant review in the template.
 - Container Map placements are normalized; pixel-perfect geometry still needs rendered-slide calibration.
-- commit: pending
+- commit: 02baad0
+
