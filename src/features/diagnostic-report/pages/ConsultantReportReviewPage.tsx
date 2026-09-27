@@ -93,6 +93,7 @@ export function ConsultantReportReviewPage() {
     <nav className="consultant-breadcrumb" aria-label="현재 위치"><Link to="/workspace/diagnostics">진단보고서 검토</Link><span aria-hidden="true">/</span><span>{project.name}</span></nav>
     <header className="consultant-page-heading"><div><p className="consultant-eyebrow">NCSI DIAGNOSTIC · {project.year}</p><h1>{project.name}</h1><p>원천 수치는 잠금 상태로 유지되며, 서술 컨테이너만 검토·수정할 수 있습니다.</p></div>
       <div className="diagnostic-actions"><Link to={`/workspace/consulting/projects/${project.id}`}>프로젝트 자료</Link>
+        {report && <Link to={`/workspace/diagnostics/${project.id}/preview`}>전체 미리보기</Link>}
         {!report || finalized ? <button type="button" disabled={busy || project.dataStatus !== 'ready'} onClick={generateReport}>{busy ? '생성 중…' : finalized ? '수정 초안 생성' : '보고서 초안 생성'}</button> : <span className={`diagnostic-report-status is-${report.status}`}>{reportStatusLabel(report.status)}</span>}
       </div>
     </header>

@@ -59,6 +59,7 @@
 .diagnostic-project-links { display: grid; gap: 8px; }
 .diagnostic-project-links a { display: flex; justify-content: space-between; gap: 12px; padding: 15px; color: #37444a; text-decoration: none; background: #fff; border: 1px solid var(--color-border); border-radius: 5px; }
 .diagnostic-project-links a:hover { border-color: var(--color-brand); }
+.diagnostic-preview-back { align-self: center; color: #59676e; font-size: 10px; text-decoration: none; }
 .diagnostic-project-links small { display: block; margin-top: 5px; color: #78838a; font-size: 10px; }
 .diagnostic-project-links strong { align-self: center; color: #7c6236; font-size: 10px; }
 .template-page-state { padding: 1px 5px; color: #37684e; background: #eaf3ed; border-radius: 3px; font-size: 9px; text-transform: capitalize; }

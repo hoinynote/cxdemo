@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSession } from '../auth/SessionProvider';
 import { useAnalysisContext } from '../state/AnalysisContext';
 import { workspaceMenu } from '../navigation/menu';
 import { useCustomerReport } from '../state/CustomerReportProvider';
+import { ReportSnapshotStore } from '../services/report-snapshot-store';
+import { DiagnosticReportExporter } from '../services/report-exporter';
+import { NCSI_2022_V1 } from '../report-templates/ncsi-2022-v1';
 
 const roleName = { company: '기업 고객', consultant: '컨설턴트', admin: '시스템 관리자' } as const;
 
@@ -14,12 +17,36 @@ export function WorkspaceLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
+  const companyProjectId = user?.role === 'company' ? user.projectIds[0] ?? '' : '';
+  const [hasFinalDiagnostic, setHasFinalDiagnostic] = useState(false);
+  const [diagnosticDownloadBusy, setDiagnosticDownloadBusy] = useState(false);
+  const [diagnosticMessage, setDiagnosticMessage] = useState('');
+  useEffect(() => {
+    setHasFinalDiagnostic(Boolean(companyProjectId && new ReportSnapshotStore().getLatestFinal(companyProjectId)));
+  }, [companyProjectId]);
   if (!user) return null;
   const projectLabel = projects.find((project) => project.id === activeProjectId)?.label ?? '프로젝트 미지정';
 
   function logout() {
     signOut();
     navigate('/login', { replace: true });
+  }
+
+  async function downloadDiagnosticReport() {
+    if (!user || user.role !== 'company' || !companyProjectId) return;
+    const report = new ReportSnapshotStore().getLatestFinal(companyProjectId);
+    if (!report) { setHasFinalDiagnostic(false); return; }
+    setDiagnosticDownloadBusy(true); setDiagnosticMessage('');
+    try {
+      const exporter = new DiagnosticReportExporter();
+      const blob = await exporter.exportPdf(report, NCSI_2022_V1, 'company');
+      const filename = exporter.filename(report, NCSI_2022_V1, 'company', 'pdf');
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename; anchor.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setDiagnosticMessage('NCSI 진단보고서 다운로드를 시작했습니다.');
+    } catch (error) { setDiagnosticMessage(error instanceof Error ? error.message : String(error)); }
+    finally { setDiagnosticDownloadBusy(false); }
   }
 
   return (
@@ -39,9 +66,9 @@ export function WorkspaceLayout() {
             </select>
           ) : <strong>{user.role === 'company' ? visibleCompanies[0]?.label ?? '배정 기업 없음' : projectLabel}</strong>}
         </div>
-        <button className="report-download" type="button" disabled={user.role !== 'company'} title={user.role === 'company' ? '확정 보고서가 없습니다.' : undefined}>
+        <button className="report-download" type="button" disabled={user.role !== 'company' || !hasFinalDiagnostic || diagnosticDownloadBusy} onClick={downloadDiagnosticReport} title={user.role === 'company' && !hasFinalDiagnostic ? '확정 보고서가 없습니다.' : undefined}>
           <span aria-hidden="true">↓</span> NCSI 진단보고서
-          {user.role === 'company' && <small>확정 보고서 없음</small>}
+          {user.role === 'company' && <small>{diagnosticDownloadBusy ? '파일 생성 중' : hasFinalDiagnostic ? '확정본 PDF 다운로드' : '확정 보고서 없음'}</small>}
         </button>
         {draft && draft.items.length > 0 && <NavLink className="report-compose-link" to="/workspace/report">리포트 구성 <span>{draft.items.length}</span></NavLink>}
         <details className="account-menu">
@@ -49,7 +76,7 @@ export function WorkspaceLayout() {
           <div className="account-menu__panel"><button type="button" onClick={logout}>로그아웃</button></div>
         </details>
       </header>
-      {notice && <div className="report-add-notice" role="status">{notice}<button type="button" aria-label="알림 닫기" onClick={clearNotice}>×</button></div>}
+      {(notice || diagnosticMessage) && <div className="report-add-notice" role="status">{diagnosticMessage || notice}<button type="button" aria-label="알림 닫기" onClick={() => { clearNotice(); setDiagnosticMessage(''); }}>×</button></div>}
       <div className="workspace-body">
         <aside id="workspace-navigation" className={`workspace-sidebar${navOpen ? ' is-open' : ''}`} aria-label="주 메뉴">
           <div className="sidebar-heading">분석 서비스</div>

@@ -116,15 +116,21 @@ export class DemoDiagnosticReportEngine implements DiagnosticReportEnginePort {
     const issues: ReviewIssue[] = [];
     for (const page of report.pages) for (const item of page.containers) {
       if (!item.scope.length) issues.push(issue(page, item, 'scope', '콘텐츠 범위가 지정되지 않았습니다.'));
+      if (item.kind === 'computed') {
+        const points = item.value as SeriesPoint[];
+        if (points.some((point) => point.value !== null && !point.evidence)) issues.push(issue(page, item, 'evidence', '수치 근거가 누락되었습니다.'));
+        if (item.required && (!points.length || points.some((point) => point.value === null || !point.evidence))) {
+          issues.push(issue(page, item, 'missing', '필수 원천 수치 또는 근거가 없습니다.'));
+        }
+        continue;
+      }
       if (!item.required) continue;
-      if (item.reviewState !== 'ready') issues.push(issue(page, item, 'missing', '필수 콘텐츠에 연결된 값 또는 자료가 없습니다.'));
+      if (item.kind === 'ai-draft' && item.reviewState !== 'ready') {
+        issues.push(issue(page, item, 'missing', '필수 분석값 또는 검토 문안에 필요한 근거가 없습니다.'));
+      }
       if (item.kind === 'ai-draft') {
         for (const point of item.requiredPoints) if (!item.checkedPoints.includes(point)) issues.push(issue(page, item, 'required-point', `검토 항목을 확인해 주세요: ${point}`));
         if (item.maxCharacters !== null && String(item.value).length > item.maxCharacters) issues.push(issue(page, item, 'overflow', `최대 ${item.maxCharacters}자를 초과했습니다.`));
-      }
-      if (item.kind === 'computed') {
-        const points = item.value as SeriesPoint[];
-        if (!points.length || points.some((point) => point.value !== null && !point.evidence)) issues.push(issue(page, item, 'evidence', '수치 근거가 누락되었거나 값을 검증할 수 없습니다.'));
       }
     }
     return issues;

@@ -37,6 +37,8 @@ export class ReportSnapshotStore {
     return report?.status === 'finalized' ? report : null;
   }
 
+  getLatestFinal(projectId: string): DiagnosticReport | null { return this.getLatest(projectId); }
+
   private read(key: string): DiagnosticReport | null {
     try {
       const raw = window.localStorage.getItem(key);
