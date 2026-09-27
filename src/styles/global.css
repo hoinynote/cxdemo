@@ -96,3 +96,12 @@ textarea {
   margin: var(--space-3) 0 0;
   color: var(--color-muted);
 }
+
+.startup-dataset-status {
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-4);
+  color: var(--color-success);
+  border-top: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 600;
+}

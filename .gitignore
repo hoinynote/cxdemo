@@ -1,4 +1,5 @@
 node_modules/
 dist/
+# Local source workbooks and generated private inputs stay out of Git and public assets.
 .local/
 *.tsbuildinfo
