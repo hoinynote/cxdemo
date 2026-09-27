@@ -83,6 +83,13 @@ export function saveProjectReferences(projectId: string, references: ReferenceMa
   safeSet(`${PROJECT_REFERENCES_KEY_PREFIX}${projectId}`, JSON.stringify(scoped));
 }
 
+export function saveProjectReportStatus(projectId: string, reportStatus: ProjectSummary['reportStatus']): void {
+  if (!DEMO_PROJECTS.some((project) => project.id === projectId)) throw new Error('프로젝트 보고서 상태 저장 범위를 확인할 수 없습니다.');
+  const saved = readStatusMap();
+  saved[projectId] = { ...saved[projectId], reportStatus, updatedAt: new Date().toISOString() };
+  safeSet(PROJECT_STATUS_KEY, JSON.stringify(saved));
+}
+
 export function projectDatasetUpdatedEventName(): string {
   return 'cx:project-dataset-updated';
 }

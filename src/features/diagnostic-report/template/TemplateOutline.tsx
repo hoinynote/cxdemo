@@ -2,8 +2,8 @@
 import type { DiagnosticPage, DiagnosticTemplate } from '../../../domain/diagnostic-template';
 import { ContainerScopeBadge } from './ContainerScopeBadge';
 import './template-outline.css';
-export function TemplateOutline({ template, activePage = 1, onSelectPage }: {
-  template: DiagnosticTemplate; activePage?: number; onSelectPage?(page: DiagnosticPage): void;
+export function TemplateOutline({ template, activePage = 1, pageStates = {}, onSelectPage }: {
+  template: DiagnosticTemplate; activePage?: number; pageStates?: Record<number, 'ready' | 'missing' | 'overflow'>; onSelectPage?(page: DiagnosticPage): void;
 }) {
   const sections = useMemo(() => template.pages.reduce<Record<string, DiagnosticPage[]>>((groups, page) => {
     (groups[page.sectionId] ??= []).push(page); return groups;
@@ -20,7 +20,7 @@ export function TemplateOutline({ template, activePage = 1, onSelectPage }: {
             <button type="button" className={page.number === activePage ? 'is-active' : ''}
               aria-current={page.number === activePage ? 'page' : undefined} onClick={() => onSelectPage?.(page)}>
               <span className="template-outline__page-title"><small>{String(page.number).padStart(2, '0')}</small>{page.title}</span>
-              <span className="template-outline__badges">{page.containers.map(container => <ContainerScopeBadge key={container.id} scope={container.scopes[0]} />)}</span>
+              <span className="template-outline__badges">{pageStates[page.number] && <span className={`template-page-state is-${pageStates[page.number]}`}>{pageStates[page.number]}</span>}{page.containers.map(container => <ContainerScopeBadge key={container.id} scope={container.scopes[0]} />)}</span>
             </button>
           </li>)}</ol>
         </details>

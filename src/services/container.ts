@@ -7,6 +7,7 @@ import { DemoAiAnalysisService } from './demo-ai';
 import { DemoImportValidator } from './demo-import-validator';
 import { demoFeedbackStore } from '../data/demo-feedback-store';
 import { CustomerReportExporter } from './customer-report-exporter';
+import { DemoDiagnosticReportEngine } from './demo-diagnostic-report-engine';
 
 export class ServiceNotConfiguredError extends Error {
   constructor(serviceName: string) {
@@ -24,6 +25,7 @@ export function createServiceContainer(dataset: DemoDataset = demoDataset, refer
     analytics,
     ai: new DemoAiAnalysisService(analytics, references, demoFeedbackStore),
     reports: customerReportExporter,
+    diagnostics: new DemoDiagnosticReportEngine(dataset),
     importValidator,
   };
 }

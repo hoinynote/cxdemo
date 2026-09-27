@@ -32,7 +32,6 @@ export default function App() {
           {analysisRoutes.map((route) => <Route key={route.path} path={route.path} element={route.element} />)}
           {consultantRoutes.map((route) => <Route key={route.path} path={route.path} element={<ConsultantOnly>{route.element as ReactElement}</ConsultantOnly>} />)}
           <Route path="report" element={<Suspense fallback={<div className="route-loading">리포트 화면을 불러오는 중입니다.</div>}><CustomerReportComposer /></Suspense>} />
-          <Route path="diagnostics" element={<ConsultantOnly><div className="route-loading">진단보고서 검토 화면을 준비하고 있습니다.</div></ConsultantOnly>} />
           <Route path="*" element={<Navigate to="overview/all" replace />} />
         </Route>
         <Route path="/admin" element={<RequireRole allow={['admin']}><Suspense fallback={<div className="route-loading">관리 포털을 불러오는 중입니다.</div>}><AdminLayout /></Suspense></RequireRole>}>

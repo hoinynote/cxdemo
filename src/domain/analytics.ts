@@ -9,7 +9,7 @@ export interface EvidenceRef {
   year: number;
   filters: DimensionValues;
   respondentCount: number | null;
-  calculationId: 'ncsi-source-mean' | 'factor-source-mean';
+  calculationId: 'ncsi-source-mean' | 'factor-source-mean' | 'respondent-distribution';
 }
 
 export interface MetricValue {
