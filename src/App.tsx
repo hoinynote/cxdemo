@@ -10,6 +10,7 @@ import { consultantRoutes } from './features/consultant/routes';
 const WorkspaceShell = lazy(() => import('./layouts/WorkspaceShell'));
 const AdminLayout = lazy(() => import('./layouts/AdminLayout').then((module) => ({ default: module.AdminLayout })));
 const AdminPage = lazy(() => import('./pages/PortalPages').then((module) => ({ default: module.AdminPage })));
+const CustomerReportComposer = lazy(() => import('./features/customer-report/CustomerReportComposer').then((module) => ({ default: module.CustomerReportComposer })));
 
 function HomeRedirect() {
   const { user } = useSession();
@@ -30,6 +31,7 @@ export default function App() {
           <Route index element={<Navigate to="overview/all" replace />} />
           {analysisRoutes.map((route) => <Route key={route.path} path={route.path} element={route.element} />)}
           {consultantRoutes.map((route) => <Route key={route.path} path={route.path} element={<ConsultantOnly>{route.element as ReactElement}</ConsultantOnly>} />)}
+          <Route path="report" element={<Suspense fallback={<div className="route-loading">리포트 화면을 불러오는 중입니다.</div>}><CustomerReportComposer /></Suspense>} />
           <Route path="diagnostics" element={<ConsultantOnly><div className="route-loading">진단보고서 검토 화면을 준비하고 있습니다.</div></ConsultantOnly>} />
           <Route path="*" element={<Navigate to="overview/all" replace />} />
         </Route>

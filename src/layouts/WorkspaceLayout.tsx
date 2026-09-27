@@ -3,12 +3,14 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSession } from '../auth/SessionProvider';
 import { useAnalysisContext } from '../state/AnalysisContext';
 import { workspaceMenu } from '../navigation/menu';
+import { useCustomerReport } from '../state/CustomerReportProvider';
 
 const roleName = { company: '기업 고객', consultant: '컨설턴트', admin: '시스템 관리자' } as const;
 
 export function WorkspaceLayout() {
   const { user, signOut } = useSession();
   const { projects, activeProjectId, setActiveProject, filters, visibleCompanies } = useAnalysisContext();
+  const { draft, notice, clearNotice } = useCustomerReport();
   const location = useLocation();
   const navigate = useNavigate();
   const [navOpen, setNavOpen] = useState(false);
@@ -41,11 +43,13 @@ export function WorkspaceLayout() {
           <span aria-hidden="true">↓</span> NCSI 진단보고서
           {user.role === 'company' && <small>확정 보고서 없음</small>}
         </button>
+        {draft && draft.items.length > 0 && <NavLink className="report-compose-link" to="/workspace/report">리포트 구성 <span>{draft.items.length}</span></NavLink>}
         <details className="account-menu">
           <summary><span className="account-avatar" aria-hidden="true">{user.name.slice(0, 1)}</span><span><strong>{user.name}</strong><small>{roleName[user.role]}</small></span></summary>
           <div className="account-menu__panel"><button type="button" onClick={logout}>로그아웃</button></div>
         </details>
       </header>
+      {notice && <div className="report-add-notice" role="status">{notice}<button type="button" aria-label="알림 닫기" onClick={clearNotice}>×</button></div>}
       <div className="workspace-body">
         <aside id="workspace-navigation" className={`workspace-sidebar${navOpen ? ' is-open' : ''}`} aria-label="주 메뉴">
           <div className="sidebar-heading">분석 서비스</div>

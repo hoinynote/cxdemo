@@ -6,6 +6,7 @@ import { DemoAnalyticsService } from './demo-analytics';
 import { DemoAiAnalysisService } from './demo-ai';
 import { DemoImportValidator } from './demo-import-validator';
 import { demoFeedbackStore } from '../data/demo-feedback-store';
+import { CustomerReportExporter } from './customer-report-exporter';
 
 export class ServiceNotConfiguredError extends Error {
   constructor(serviceName: string) {
@@ -14,23 +15,15 @@ export class ServiceNotConfiguredError extends Error {
   }
 }
 
-const unconfiguredReports: ReportEnginePort = {
-  async exportCustomerReport() {
-    throw new ServiceNotConfiguredError('고객 리포트');
-  },
-  async generateDiagnosticReport() {
-    throw new ServiceNotConfiguredError('진단 보고서');
-  },
-};
-
 const importValidator = new DemoImportValidator();
+const customerReportExporter: ReportEnginePort = new CustomerReportExporter();
 
 export function createServiceContainer(dataset: DemoDataset = demoDataset, references: ReferenceMaterial[] = []) {
   const analytics = new DemoAnalyticsService(dataset);
   return {
     analytics,
     ai: new DemoAiAnalysisService(analytics, references, demoFeedbackStore),
-    reports: unconfiguredReports,
+    reports: customerReportExporter,
     importValidator,
   };
 }

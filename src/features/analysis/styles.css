@@ -29,6 +29,7 @@
 .analysis-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; margin-bottom: 9px; }
 .analysis-panel-heading h2 { margin: 0; color: #2c373d; font-size: 14px; letter-spacing: -.015em; }
 .analysis-panel-heading p { margin: 4px 0 0; color: #7a858b; font-size: 10px; }
+.report-chart-actions { display: flex; align-items: center; gap: 9px; }
 .score-delta { display: flex; align-items: center; gap: 5px; color: #69767c; font-size: 10px; }
 .score-delta.is-positive { color: #337556; }
 .score-delta.is-negative { color: #ae5843; }

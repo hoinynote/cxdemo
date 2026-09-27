@@ -11,10 +11,13 @@ export interface CustomerReportItem {
   evidence: EvidenceRef[];
 }
 
+export type CustomerReportItemType = CustomerReportItem['type'];
+
 export interface CustomerReportDraft {
   id: string;
   title: string;
   projectId: string;
+  scopeLabel: string;
   filters: AnalysisFilters;
   items: CustomerReportItem[];
   createdAt: string;

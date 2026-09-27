@@ -35,6 +35,7 @@
 .report-download { display: flex; align-items: center; gap: 7px; min-height: 36px; margin-left: auto; padding: 7px 11px; color: var(--color-brand-strong); background: #fff; border: 1px solid #e8c7bb; border-radius: var(--radius-control); font-size: 12px; font-weight: 650; }
 .report-download:disabled { cursor: not-allowed; opacity: .74; }
 .report-download small { padding-left: 7px; color: var(--color-muted); border-left: 1px solid var(--color-border); font-size: 10px; font-weight: 500; }
+.report-compose-link { white-space: nowrap; }
 .account-menu { position: relative; flex: 0 0 auto; }
 .account-menu summary { display: flex; align-items: center; gap: 9px; padding: 5px 0 5px 8px; list-style: none; cursor: pointer; }
 .account-menu summary::-webkit-details-marker { display: none; }
