@@ -8,6 +8,14 @@ export interface DemoUser {
   projectIds: string[];
 }
 
+export type AccountStatus = 'active' | 'inactive';
+export interface ManagedAccount extends Omit<DemoUser, 'companyId'> {
+  email: string;
+  status: AccountStatus;
+  companyId: string | null;
+  assignedProjectIds: string[];
+}
+
 export interface AccessScope {
   role: UserRole;
   visibleCompanyIds: string[];

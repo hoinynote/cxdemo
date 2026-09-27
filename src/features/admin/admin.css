@@ -1,0 +1,14 @@
+.admin-form { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; padding: 18px; background: #fff; border: 1px solid #dce3df; border-radius: 5px; }
+.admin-form label { display: grid; gap: 6px; color: #53645a; font-size: 11px; }
+.admin-form input,.admin-form select { min-height: 36px; padding: 7px 9px; color: #263c31; background: #fff; border: 1px solid #cfd9d3; border-radius: 4px; font: inherit; }
+.admin-form button,.admin-action { align-self: end; min-height: 36px; padding: 8px 13px; color: #fff; background: #426a57; border: 0; border-radius: 4px; font: inherit; cursor: pointer; }
+.admin-form button:disabled,.admin-action:disabled { opacity: .5; cursor: not-allowed; }
+.admin-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.admin-inline select,.admin-inline button { min-height: 30px; padding: 5px 8px; border: 1px solid #d4ddd7; border-radius: 3px; background: #fff; color: #34483b; font: inherit; }
+.admin-feedback { margin: 12px 0; color: #426a57; font-size: 12px; }
+.admin-table-panel + .admin-table-panel,.admin-form + .admin-table-panel { margin-top: 18px; }
+.admin-reset { margin-top: 24px; color: #7c5145; background: #fff; border: 1px solid #ddc9c2; }
+.admin-checks { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; max-height: 140px; overflow: auto; }
+.admin-checks label { display:flex; align-items:center; gap: 7px; }
+.admin-muted { color: #849089; }
+@media(max-width:760px) { .admin-summary { grid-template-columns: 1fr; } .admin-form { grid-template-columns: 1fr; } .admin-table-panel { overflow-x: auto; } }

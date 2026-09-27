@@ -23,6 +23,16 @@ export interface ProjectDataStatus {
   updatedAt: string;
 }
 
+export interface ProjectSetupInput {
+  id: string;
+  name: string;
+  subjectCompanyId: string;
+  comparisonCompanyIds: string[];
+  consultantUserId: string;
+  datasetId: string;
+  year: 2022;
+}
+
 export interface ReferenceMaterial {
   id: string;
   projectId: string;

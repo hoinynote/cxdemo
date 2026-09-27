@@ -9,7 +9,12 @@ import { consultantRoutes } from './features/consultant/routes';
 
 const WorkspaceShell = lazy(() => import('./layouts/WorkspaceShell'));
 const AdminLayout = lazy(() => import('./layouts/AdminLayout').then((module) => ({ default: module.AdminLayout })));
-const AdminPage = lazy(() => import('./pages/PortalPages').then((module) => ({ default: module.AdminPage })));
+const AdminHomePage = lazy(() => import('./features/admin/pages/AdminHomePage').then((module) => ({ default: module.AdminHomePage })));
+const UserManagementPage = lazy(() => import('./features/admin/pages/UserManagementPage').then((module) => ({ default: module.UserManagementPage })));
+const ProjectManagementPage = lazy(() => import('./features/admin/pages/ProjectManagementPage').then((module) => ({ default: module.ProjectManagementPage })));
+const DataStatusPage = lazy(() => import('./features/admin/pages/DataStatusPage').then((module) => ({ default: module.DataStatusPage })));
+const TemplateManagementPage = lazy(() => import('./features/admin/pages/TemplateManagementPage').then((module) => ({ default: module.TemplateManagementPage })));
+const AiQualityPage = lazy(() => import('./features/admin/pages/AiQualityPage').then((module) => ({ default: module.AiQualityPage })));
 const CustomerReportComposer = lazy(() => import('./features/customer-report/CustomerReportComposer').then((module) => ({ default: module.CustomerReportComposer })));
 
 function HomeRedirect() {
@@ -35,11 +40,12 @@ export default function App() {
           <Route path="*" element={<Navigate to="overview/all" replace />} />
         </Route>
         <Route path="/admin" element={<RequireRole allow={['admin']}><Suspense fallback={<div className="route-loading">관리 포털을 불러오는 중입니다.</div>}><AdminLayout /></Suspense></RequireRole>}>
-          <Route index element={<Suspense fallback={null}><AdminPage /></Suspense>} />
-          <Route path="users" element={<Suspense fallback={null}><AdminPage /></Suspense>} />
-          <Route path="projects" element={<Suspense fallback={null}><AdminPage /></Suspense>} />
-          <Route path="data" element={<Suspense fallback={null}><AdminPage /></Suspense>} />
-          <Route path="settings" element={<Suspense fallback={null}><AdminPage /></Suspense>} />
+          <Route index element={<Suspense fallback={null}><AdminHomePage /></Suspense>} />
+          <Route path="users" element={<Suspense fallback={null}><UserManagementPage /></Suspense>} />
+          <Route path="projects" element={<Suspense fallback={null}><ProjectManagementPage /></Suspense>} />
+          <Route path="data" element={<Suspense fallback={null}><DataStatusPage /></Suspense>} />
+          <Route path="templates" element={<Suspense fallback={null}><TemplateManagementPage /></Suspense>} />
+          <Route path="ai-quality" element={<Suspense fallback={null}><AiQualityPage /></Suspense>} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
         <Route path="*" element={<HomeRedirect />} />

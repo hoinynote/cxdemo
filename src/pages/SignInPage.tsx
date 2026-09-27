@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { DEMO_USERS, findDemoUser, getHomePath } from '../auth/demo-users';
+import { findDemoUser, getHomePath, listSignInUsers } from '../auth/demo-users';
 import { useSession } from '../auth/SessionProvider';
 
 const roleLabel = { company: '기업 고객', consultant: '컨설턴트', admin: '시스템 관리자' } as const;
@@ -29,7 +29,7 @@ export function SignInPage() {
         <h1 id="signin-title">CX 서비스에 오신 것을 환영합니다</h1>
         <p className="signin-description">사용자 영역을 선택하면 해당 포털로 이동합니다.</p>
         <div className="account-list" aria-label="로그인할 대표 계정">
-          {DEMO_USERS.map((account) => (
+          {listSignInUsers().map((account) => (
             <button className="account-option" type="button" key={account.id} onClick={() => chooseAccount(account.id)}>
               <span className="account-option__text"><strong>{account.name}</strong><small>{roleLabel[account.role]}</small></span>
               <span className="account-option__arrow" aria-hidden="true">→</span>

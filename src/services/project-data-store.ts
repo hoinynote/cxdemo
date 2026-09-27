@@ -1,22 +1,23 @@
 import { demoDataset } from '../data/demo-dataset';
-import { DEMO_PROJECTS, DEMO_REFERENCE_MATERIALS } from '../data/demo-projects';
+import { DEMO_REFERENCE_MATERIALS } from '../data/demo-projects';
 import type { DemoDataset } from '../data/schema';
 import type { DatasetReadiness } from '../domain/data-import';
 import type { ProjectDataStatus, ProjectSummary, ReferenceMaterial } from '../domain/projects';
+import { listManagedProjects } from '../data/admin-demo-store';
 
 const PROJECT_STATUS_KEY = 'kpc-cx-project-status-v1';
 const PROJECT_DATA_KEY_PREFIX = 'kpc-cx-project-aggregate-v1:';
 const PROJECT_REFERENCES_KEY_PREFIX = 'kpc-cx-project-references-v1:';
 
 export function listProjectSummaries(assignedProjectIds: string[]): ProjectSummary[] {
-  const projects = DEMO_PROJECTS.filter((project) => assignedProjectIds.includes(project.id)).map((project) => ({ ...project }));
+  const projects = listManagedProjects().filter((project) => assignedProjectIds.includes(project.id)).map((project) => ({ ...project }));
   const saved = readStatusMap();
   return projects.map((project) => ({ ...project, ...(saved[project.id] ?? {}) }))
     .sort((left, right) => projectSortOrder(left) - projectSortOrder(right) || right.updatedAt.localeCompare(left.updatedAt));
 }
 
 export function getProjectSummary(projectId: string): ProjectSummary | undefined {
-  return listProjectSummaries(DEMO_PROJECTS.map((project) => project.id)).find((project) => project.id === projectId);
+  return listProjectSummaries(listManagedProjects().map((project) => project.id)).find((project) => project.id === projectId);
 }
 
 export function getProjectDataStatus(projectId: string): ProjectDataStatus | undefined {
@@ -32,7 +33,7 @@ export function getProjectDataStatus(projectId: string): ProjectDataStatus | und
 }
 
 export function saveProjectReadiness(projectId: string, readiness: DatasetReadiness): ProjectSummary | undefined {
-  const project = DEMO_PROJECTS.find((item) => item.id === projectId);
+  const project = listManagedProjects().find((item) => item.id === projectId);
   if (!project) return undefined;
   const dataStatus: ProjectSummary['dataStatus'] = readiness.status;
   const next: Partial<ProjectSummary> = { dataStatus, readiness, updatedAt: new Date().toISOString() };
@@ -43,7 +44,7 @@ export function saveProjectReadiness(projectId: string, readiness: DatasetReadin
 }
 
 export function saveProjectDataset(projectId: string, dataset: DemoDataset): void {
-  const projectExists = DEMO_PROJECTS.some((project) => project.id === projectId);
+  const projectExists = listManagedProjects().some((project) => project.id === projectId);
   if (!projectExists) throw new Error('프로젝트 데이터 저장 범위를 확인할 수 없습니다.');
   if (!dataset.cells.length || dataset.sourceRowCount !== dataset.cells.reduce((sum, cell) => sum + cell.respondentCount, 0)) {
     throw new Error('집계 데이터 검증에 실패하여 프로젝트 데이터를 저장하지 않았습니다.');
@@ -78,13 +79,13 @@ export function getProjectReferences(projectId: string): ReferenceMaterial[] {
 }
 
 export function saveProjectReferences(projectId: string, references: ReferenceMaterial[]): void {
-  if (!DEMO_PROJECTS.some((project) => project.id === projectId)) throw new Error('프로젝트 참고자료 저장 범위를 확인할 수 없습니다.');
+  if (!listManagedProjects().some((project) => project.id === projectId)) throw new Error('프로젝트 참고자료 저장 범위를 확인할 수 없습니다.');
   const scoped = references.filter((item) => item.projectId === projectId);
   safeSet(`${PROJECT_REFERENCES_KEY_PREFIX}${projectId}`, JSON.stringify(scoped));
 }
 
 export function saveProjectReportStatus(projectId: string, reportStatus: ProjectSummary['reportStatus']): void {
-  if (!DEMO_PROJECTS.some((project) => project.id === projectId)) throw new Error('프로젝트 보고서 상태 저장 범위를 확인할 수 없습니다.');
+  if (!listManagedProjects().some((project) => project.id === projectId)) throw new Error('프로젝트 보고서 상태 저장 범위를 확인할 수 없습니다.');
   const saved = readStatusMap();
   saved[projectId] = { ...saved[projectId], reportStatus, updatedAt: new Date().toISOString() };
   safeSet(PROJECT_STATUS_KEY, JSON.stringify(saved));

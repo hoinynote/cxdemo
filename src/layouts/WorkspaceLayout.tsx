@@ -6,7 +6,7 @@ import { workspaceMenu } from '../navigation/menu';
 import { useCustomerReport } from '../state/CustomerReportProvider';
 import { ReportSnapshotStore } from '../services/report-snapshot-store';
 import { DiagnosticReportExporter } from '../services/report-exporter';
-import { NCSI_2022_V1 } from '../report-templates/ncsi-2022-v1';
+import { TemplateDemoStore } from '../data/template-demo-store';
 
 const roleName = { company: '기업 고객', consultant: '컨설턴트', admin: '시스템 관리자' } as const;
 
@@ -39,8 +39,10 @@ export function WorkspaceLayout() {
     setDiagnosticDownloadBusy(true); setDiagnosticMessage('');
     try {
       const exporter = new DiagnosticReportExporter();
-      const blob = await exporter.exportPdf(report, NCSI_2022_V1, 'company');
-      const filename = exporter.filename(report, NCSI_2022_V1, 'company', 'pdf');
+      const template = TemplateDemoStore.get(report.snapshot.templateId, report.snapshot.templateVersion);
+      if (!template) throw new Error('보고서 생성에 사용된 템플릿 버전을 찾을 수 없습니다. 관리자에게 확인해 주세요.');
+      const blob = await exporter.exportPdf(report, template, 'company');
+      const filename = exporter.filename(report, template, 'company', 'pdf');
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a'); anchor.href = url; anchor.download = filename; anchor.click();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);

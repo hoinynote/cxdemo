@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useSession } from '../../../auth/SessionProvider';
 import { demoDataset } from '../../../data/demo-dataset';
 import type { DiagnosticReport, ReviewIssue } from '../../../domain/diagnostic-report';
-import { NCSI_2022_V1 } from '../../../report-templates/ncsi-2022-v1';
+import { TemplateDemoStore } from '../../../data/template-demo-store';
 import { createServiceContainer } from '../../../services/container';
 import { getProjectDataset, getProjectReferences, getProjectSummary, listProjectSummaries } from '../../../services/project-data-store';
 import { ContainerEditor } from '../components/ContainerEditor';
@@ -23,6 +23,8 @@ export function ConsultantReportReviewPage() {
   const [activePage, setActivePage] = useState(1);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const generationTemplate = TemplateDemoStore.getActive();
+  const template = report ? TemplateDemoStore.get(report.snapshot.templateId, report.snapshot.templateVersion) ?? generationTemplate : generationTemplate;
 
   useEffect(() => {
     setReport(projectId ? services.diagnostics.getDraft(projectId) ?? services.diagnostics.getLatestFinalized(projectId) : null);
@@ -40,7 +42,7 @@ export function ConsultantReportReviewPage() {
   const reviewerUser = user;
 
   const pages = report?.pages ?? [];
-  const currentPage = NCSI_2022_V1.pages.find(page => page.number === activePage) ?? NCSI_2022_V1.pages[0]!;
+  const currentPage = template.pages.find(page => page.number === activePage) ?? template.pages[0]!;
   const renderedPage = pages.find(page => page.pageNumber === activePage);
   const allContainers = pages.flatMap(page => page.containers);
   const issues = report ? services.diagnostics.checkDraft(report) : [];
@@ -60,8 +62,8 @@ export function ConsultantReportReviewPage() {
       const generated = await services.diagnostics.generate({
         projectId: activeProject.id,
         datasetId: dataset.id,
-        templateId: NCSI_2022_V1.id,
-        templateVersion: NCSI_2022_V1.version,
+        templateId: generationTemplate.id,
+        templateVersion: generationTemplate.version,
         filters: { year: 2022, industryId: dataset.industryId, subjectCompanyId: activeProject.subjectCompanyId, comparisonCompanyIds: [...activeProject.comparisonCompanyIds], dimensions: {} },
       }, reviewerUser.name);
       setReport(generated); setActivePage(1); setMessage('104페이지 초안을 생성했습니다. 수치 근거와 서술 검토를 진행해 주세요.');
@@ -108,9 +110,9 @@ export function ConsultantReportReviewPage() {
     {message && <p className="diagnostic-message" role="status">{message}</p>}
     {issues.length > 0 && report && <section className="diagnostic-issue-summary"><strong>확정 전 해결할 항목 {issues.length}건</strong><ul>{issues.slice(0, 6).map((item, index) => <li key={`${item.containerId}-${index}`}><button type="button" onClick={() => setActivePage(item.pageNumber)}>p.{item.pageNumber} · {item.message}</button></li>)}</ul>{issues.length > 6 && <small>나머지 {issues.length - 6}건은 페이지별 목록에서 확인할 수 있습니다.</small>}</section>}
     <div className="diagnostic-review-layout">
-      <aside className="diagnostic-outline-panel"><TemplateOutline template={NCSI_2022_V1} activePage={activePage} pageStates={pageStates} onSelectPage={page => setActivePage(page.number)} /></aside>
+      <aside className="diagnostic-outline-panel"><TemplateOutline template={template} activePage={activePage} pageStates={pageStates} onSelectPage={page => setActivePage(page.number)} /></aside>
       <main className="diagnostic-page-editor">
-        <header><div><small>PAGE {String(currentPage.number).padStart(3, '0')} / 104 · {currentPage.sectionId}</small><h2>{currentPage.title}</h2></div><span>{renderedPage?.containers.length ?? currentPage.containers.length}개 컨테이너</span></header>
+        <header><div><small>PAGE {String(currentPage.number).padStart(3, '0')} / {template.pages.length} · {currentPage.sectionId}</small><h2>{currentPage.title}</h2></div><span>{renderedPage?.containers.length ?? currentPage.containers.length}개 컨테이너</span></header>
         {!report ? <div className="diagnostic-empty">보고서 초안을 생성하면 원천 근거와 검토 항목이 여기에 표시됩니다.</div>
           : renderedPage?.containers.map(container => <ContainerEditor key={container.containerId} container={container} issues={issueByContainer.get(container.containerId) ?? []} readOnly={finalized} onTextChange={updateText} onPointChange={updatePoint} />)}
       </main>

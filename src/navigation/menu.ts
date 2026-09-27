@@ -40,5 +40,6 @@ export const adminMenu: MenuItem[] = [
   { label: '사용자 및 권한', path: '/admin/users', roles: ['admin'] },
   { label: '프로젝트 관리', path: '/admin/projects', roles: ['admin'] },
   { label: '데이터 관리', path: '/admin/data', roles: ['admin'] },
-  { label: '서비스 설정', path: '/admin/settings', roles: ['admin'] },
+  { label: '보고서 템플릿', path: '/admin/templates', roles: ['admin'] },
+  { label: 'AI 사용 및 품질', path: '/admin/ai-quality', roles: ['admin'] },
 ];

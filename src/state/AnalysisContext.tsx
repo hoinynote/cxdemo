@@ -5,9 +5,8 @@ import type { AnalysisFilters, FilterOption } from '../domain/filters';
 import type { DemoUser } from '../domain/auth';
 import { useSession } from '../auth/SessionProvider';
 import { DEFAULT_FILTERS } from '../domain/filters';
-import { DEMO_PROJECTS } from '../data/demo-projects';
 import { DemoAnalyticsService } from '../services/demo-analytics';
-import { getProjectDataset, listProjectSummaries, projectDatasetUpdatedEventName } from '../services/project-data-store';
+import { getProjectDataset, getProjectSummary, listProjectSummaries, projectDatasetUpdatedEventName } from '../services/project-data-store';
 
 type AnalysisAction =
   | { type: 'setYear'; value: 2022 }
@@ -34,7 +33,7 @@ const STORAGE_KEY = 'kpc-cx-analysis-context';
 const AnalysisContext = createContext<AnalysisContextValue | null>(null);
 
 function initialFilters(user: DemoUser, dataset: DemoDataset, projectId: string): AnalysisFilters {
-  const project = DEMO_PROJECTS.find((candidate) => candidate.id === projectId);
+  const project = getProjectSummary(projectId);
   const companyId = user.role === 'company' ? user.companyId ?? '' : project?.subjectCompanyId ?? dataset.companies[0]?.id ?? '';
   try {
     const raw = window.sessionStorage.getItem(`${STORAGE_KEY}:${user.id}:${projectId}`);
@@ -102,7 +101,7 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
   const allowedProjects = assignedProjects.map((project) => ({ id: project.id, label: project.name }));
   const visibleCompanies = useMemo(() => {
     if (user.role === 'company') return dataset.companies.filter((company) => company.id === user.companyId);
-    const project = DEMO_PROJECTS.find((item) => item.id === activeProjectId);
+    const project = getProjectSummary(activeProjectId);
     const companyIds = new Set(project ? [project.subjectCompanyId, ...project.comparisonCompanyIds] : []);
     return allowedProjects.length > 0 ? dataset.companies.filter((company) => companyIds.has(company.id)) : [];
   }, [activeProjectId, allowedProjects.length, dataset.companies, user]);

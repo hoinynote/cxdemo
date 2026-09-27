@@ -4,7 +4,7 @@ import type { ReferenceMaterial } from '../domain/projects';
 import type { DiagnosticEvidence, DiagnosticReport, DiagnosticReportEnginePort, RenderedContainer, ReviewIssue } from '../domain/diagnostic-report';
 import type { DiagnosticContainer, DiagnosticPage } from '../domain/diagnostic-template';
 import type { DiagnosticReportInput } from '../domain/reports';
-import { NCSI_2022_V1 } from '../report-templates/ncsi-2022-v1';
+import { TemplateDemoStore } from '../data/template-demo-store';
 import { getProjectReferences, getProjectSummary, saveProjectReportStatus } from './project-data-store';
 import { ReportSnapshotStore } from './report-snapshot-store';
 import { DemoAnalyticsService } from './demo-analytics';
@@ -32,11 +32,12 @@ export class DemoDiagnosticReportEngine implements DiagnosticReportEnginePort {
   }
 
   async generate(input: DiagnosticReportInput, generatedBy: string): Promise<DiagnosticReport> {
+    const template = TemplateDemoStore.getActive();
     const project = getProjectSummary(input.projectId);
     if (!project) throw new DiagnosticReportInputError('프로젝트를 찾을 수 없습니다.');
     if (project.dataStatus !== 'ready') throw new DiagnosticReportInputError('NCSI 진단보고서 생성에는 준비 완료 상태의 데이터가 필요합니다.');
     if (input.datasetId !== this.dataset.id) throw new DiagnosticReportInputError('선택 프로젝트 데이터셋이 변경되었습니다. 화면을 새로고침한 뒤 다시 생성하세요.');
-    if (input.templateId !== NCSI_2022_V1.id || input.templateVersion !== NCSI_2022_V1.version) throw new DiagnosticReportInputError('지원하지 않는 NCSI 템플릿 버전입니다.');
+    if (input.templateId !== template.id || input.templateVersion !== template.version) throw new DiagnosticReportInputError('지원하지 않는 NCSI 템플릿 버전입니다. 화면을 새로고침한 뒤 다시 생성하세요.');
     if (project.year !== 2022 || input.filters.year !== project.year || this.dataset.year !== project.year) throw new DiagnosticReportInputError('현재 NCSI 데모 보고서는 2022년 데이터만 지원합니다.');
     if (input.filters.subjectCompanyId !== project.subjectCompanyId
       || !sameIds(input.filters.comparisonCompanyIds, project.comparisonCompanyIds)
@@ -48,7 +49,7 @@ export class DemoDiagnosticReportEngine implements DiagnosticReportEnginePort {
     const projectReferences = getProjectReferences(project.id);
     const approvedReferences = projectReferences.filter((reference) => reference.status === 'approved');
     const analysis = this.analytics.analyze(input.filters);
-    const pages = NCSI_2022_V1.pages.map((page) => ({
+    const pages = template.pages.map((page) => ({
       pageNumber: page.number,
       title: page.title,
       sectionId: page.sectionId,
@@ -67,8 +68,8 @@ export class DemoDiagnosticReportEngine implements DiagnosticReportEnginePort {
         subjectCompanyId: project.subjectCompanyId,
         comparisonCompanyIds: [...project.comparisonCompanyIds],
         calculationVersion: CALCULATION_VERSION,
-        templateId: NCSI_2022_V1.id,
-        templateVersion: NCSI_2022_V1.version,
+        templateId: template.id,
+        templateVersion: template.version,
         approvedReferenceIds: [...new Set(pages.flatMap((page) => page.containers.flatMap((item) => item.evidence.flatMap((evidence) => isReferenceEvidence(evidence) ? [evidence.referenceId] : []))))],
         generatedAt: new Date().toISOString(),
       },
