@@ -1,4 +1,4 @@
-# Task: T10 Diagnostic Generation & Consultant Review
+﻿# Task: T10 Diagnostic Generation & Consultant Review
 
 ## Status: done
 
@@ -78,4 +78,5 @@ Task: T10-report-generation-and-review
 - [x] Validation passed: `npm.cmd run typecheck`, `npm.cmd run build`.
 - Required containers without an approved reference or supported respondent metric remain marked missing and block finalization; no sample scores are substituted.
 - One source-map generation condition is absent in extracted text and is explicitly surfaced for consultant review.
-- commit: pending
+- commit: 290967e
+
