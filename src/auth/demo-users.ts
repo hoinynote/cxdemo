@@ -1,9 +1,5 @@
 import type { DemoUser } from '../domain/auth';
 
-export const DEMO_PROJECTS = [
-  { id: 'project-dutyfree-2022', label: '2022 면세점 NCSI 진단' },
-] as const;
-
 export const DEMO_USERS: DemoUser[] = [
   {
     id: 'company-lotte',
@@ -31,5 +27,5 @@ export function findDemoUser(userId: string): DemoUser | undefined {
 }
 
 export function getHomePath(role: DemoUser['role']): string {
-  return role === 'admin' ? '/admin' : '/workspace/analysis/overall';
+  return role === 'admin' ? '/admin' : '/workspace/overview/all';
 }

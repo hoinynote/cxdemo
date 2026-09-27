@@ -5,6 +5,7 @@ import App from './App';
 import './styles/global.css';
 import './styles/layout.css';
 import './features/analysis/styles.css';
+import './features/consultant/styles.css';
 
 const rootElement = document.getElementById('root');
 

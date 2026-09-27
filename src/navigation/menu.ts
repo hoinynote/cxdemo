@@ -31,7 +31,7 @@ export const workspaceMenu: MenuItem[] = [
       { label: '업종별 기업 비교 분석', path: '/workspace/factors/industry-comparison', roles: analysisRoles },
     ],
   },
-  { label: '컨설팅 업무', path: '/workspace/consulting', roles: consultantOnly },
+  { label: '컨설팅 업무', path: '/workspace/consulting/projects', roles: consultantOnly },
   { label: '진단보고서 검토', path: '/workspace/diagnostics', roles: consultantOnly },
 ];
 

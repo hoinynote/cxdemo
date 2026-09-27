@@ -5,11 +5,11 @@ import { SessionProvider, useSession } from './auth/SessionProvider';
 import { getHomePath } from './auth/demo-users';
 import { SignInPage } from './pages/SignInPage';
 import { analysisRoutes } from './features/analysis/routes';
+import { consultantRoutes } from './features/consultant/routes';
 
 const WorkspaceShell = lazy(() => import('./layouts/WorkspaceShell'));
 const AdminLayout = lazy(() => import('./layouts/AdminLayout').then((module) => ({ default: module.AdminLayout })));
 const AdminPage = lazy(() => import('./pages/PortalPages').then((module) => ({ default: module.AdminPage })));
-const WorkspacePage = lazy(() => import('./pages/PortalPages').then((module) => ({ default: module.WorkspacePage })));
 
 function HomeRedirect() {
   const { user } = useSession();
@@ -29,8 +29,8 @@ export default function App() {
         <Route path="/workspace" element={<RequireRole allow={['company', 'consultant']}><Suspense fallback={<div className="route-loading">분석 포털을 불러오는 중입니다.</div>}><WorkspaceShell /></Suspense></RequireRole>}>
           <Route index element={<Navigate to="overview/all" replace />} />
           {analysisRoutes.map((route) => <Route key={route.path} path={route.path} element={route.element} />)}
-          <Route path="consulting" element={<ConsultantOnly><Suspense fallback={null}><WorkspacePage /></Suspense></ConsultantOnly>} />
-          <Route path="diagnostics" element={<ConsultantOnly><Suspense fallback={null}><WorkspacePage /></Suspense></ConsultantOnly>} />
+          {consultantRoutes.map((route) => <Route key={route.path} path={route.path} element={<ConsultantOnly>{route.element as ReactElement}</ConsultantOnly>} />)}
+          <Route path="diagnostics" element={<ConsultantOnly><div className="route-loading">진단보고서 검토 화면을 준비하고 있습니다.</div></ConsultantOnly>} />
           <Route path="*" element={<Navigate to="overview/all" replace />} />
         </Route>
         <Route path="/admin" element={<RequireRole allow={['admin']}><Suspense fallback={<div className="route-loading">관리 포털을 불러오는 중입니다.</div>}><AdminLayout /></Suspense></RequireRole>}>

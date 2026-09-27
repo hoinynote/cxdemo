@@ -2,11 +2,9 @@ import { useMemo, useState } from 'react';
 import { AnalysisPageFrame } from '../components/AnalysisPageFrame';
 import { SegmentScoreChart } from '../components/SegmentScoreChart';
 import { useAnalysisScreen } from '../analysis-context';
-import { createServiceContainer } from '../../../services/container';
 import type { DimensionKey } from '../../../data/schema';
 import type { SeriesPoint } from '../../../domain/analytics';
 
-const analytics = createServiceContainer().analytics;
 const segmentOptions: Array<{ key: DimensionKey; label: string }> = [
   { key: 'gender', label: '성별' },
   { key: 'ageGroup', label: '연령대' },
@@ -15,7 +13,7 @@ const segmentOptions: Array<{ key: DimensionKey; label: string }> = [
 ];
 
 export function CustomerSegmentsPage() {
-  const { filters, user, subjectCompany } = useAnalysisScreen('고객군별 수준 분석');
+  const { filters, user, subjectCompany, analytics } = useAnalysisScreen('고객군별 수준 분석');
   const [segmentKey, setSegmentKey] = useState<DimensionKey>('gender');
   const segmentLabel = segmentOptions.find((option) => option.key === segmentKey)?.label ?? '고객군';
   const points = useMemo<SeriesPoint[]>(() => {
@@ -37,7 +35,7 @@ export function CustomerSegmentsPage() {
         ...(metric.value === null ? { unavailableReason: metric.unavailableReason } : {}),
       };
     });
-  }, [filters, segmentKey]);
+  }, [analytics, filters, segmentKey]);
 
   return <AnalysisPageFrame title="고객군별 수준 분석" screenId="factors-customer-segments">
     <section className="segment-control-row"><div><strong>{subjectCompany?.label ?? '분석 기업'}</strong><span>고객 특성별 점수와 표본을 비교합니다.</span></div><label className="analysis-filter-field"><span>분석 기준</span><select value={segmentKey} onChange={(event) => setSegmentKey(event.target.value as DimensionKey)}>{segmentOptions.map((option) => <option key={option.key} value={option.key}>{option.label}</option>)}</select></label></section>

@@ -22,8 +22,8 @@ export function aggregateResponses(
   for (const [index, row] of rows.entries()) {
     const physicalRow = typeof row.__sourceRow === 'number' ? row.__sourceRow : index + 2;
     const companyLabel = requiredText(row[mapping.companyId], mapping.companyId, physicalRow);
-    const industry = requiredText(row[mapping.industryId], mapping.industryId, physicalRow);
-    const sector = requiredText(row[mapping.sectorId], mapping.sectorId, physicalRow);
+    requiredText(row[mapping.industryId], mapping.industryId, physicalRow);
+    requiredText(row[mapping.sectorId], mapping.sectorId, physicalRow);
     const year = parseYear(row[mapping.year], physicalRow);
     if (year !== 2022) {
       throw new Error(`행 ${physicalRow} ${mapping.year}: 2022년 데이터만 허용됩니다 (값: ${String(row[mapping.year])}).`);
@@ -73,9 +73,6 @@ export function aggregateResponses(
       cell.factorCounts[factorId] += 1;
     }
 
-    if (industry !== '면세점' || sector !== '도매 및 소매업(G)') {
-      throw new Error(`행 ${physicalRow}: 업종/산업 값이 첨부 분석 범위와 다릅니다.`);
-    }
   }
 
   return { cells: [...groups.values()], missingValueCounts };

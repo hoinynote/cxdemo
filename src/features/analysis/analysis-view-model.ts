@@ -1,5 +1,6 @@
 import type { AnalysisResult, EvidenceRef, MetricValue, SeriesPoint } from '../../domain/analytics';
 import { demoDataset } from '../../data/demo-dataset';
+import type { DemoDataset } from '../../data/schema';
 
 export interface AnalysisViewModel {
   title: string;
@@ -13,7 +14,7 @@ export interface AnalysisViewModel {
   emptyMessage: string | null;
 }
 
-export function buildAnalysisViewModel(result: AnalysisResult, title: string): AnalysisViewModel {
+export function buildAnalysisViewModel(result: AnalysisResult, title: string, dataset: DemoDataset = demoDataset): AnalysisViewModel {
   const evidence = [
     result.subjectNCSI.evidence,
     ...result.comparisonSeries.map((point) => point.evidence),
@@ -23,7 +24,7 @@ export function buildAnalysisViewModel(result: AnalysisResult, title: string): A
   const comparisonMean = availableComparisons.length > 0
     ? availableComparisons.reduce((sum, point) => sum + (point.value ?? 0), 0) / availableComparisons.length
     : null;
-  const subjectCompany = demoDataset.companies.find((company) => company.id === result.subjectNCSI.evidence?.companyId);
+  const subjectCompany = dataset.companies.find((company) => company.id === result.subjectNCSI.evidence?.companyId);
 
   return {
     title,

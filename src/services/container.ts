@@ -1,9 +1,9 @@
 import { demoDataset } from '../data/demo-dataset';
 import type { DemoDataset } from '../data/schema';
 import type { AiAnalysisPort } from '../domain/ai';
-import type { ImportValidationPort } from '../domain/data-import';
 import type { ReportEnginePort } from '../domain/reports';
 import { DemoAnalyticsService } from './demo-analytics';
+import { DemoImportValidator } from './demo-import-validator';
 
 export class ServiceNotConfiguredError extends Error {
   constructor(serviceName: string) {
@@ -30,17 +30,13 @@ const unconfiguredReports: ReportEnginePort = {
   },
 };
 
-const unconfiguredImportValidator: ImportValidationPort = {
-  async validate() {
-    throw new ServiceNotConfiguredError('데이터 가져오기 검증');
-  },
-};
+const importValidator = new DemoImportValidator();
 
 export function createServiceContainer(dataset: DemoDataset = demoDataset) {
   return {
     analytics: new DemoAnalyticsService(dataset),
     ai: unconfiguredAi,
     reports: unconfiguredReports,
-    importValidator: unconfiguredImportValidator,
+    importValidator,
   };
 }
